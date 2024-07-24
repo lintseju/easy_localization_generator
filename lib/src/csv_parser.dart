@@ -53,6 +53,7 @@ class CSVParser {
       final bool hasArgs = value.contains('{') && value.contains('}');
       if (hasArgs) {
         final List<String> args = [];
+        bool hasArgs = false;
 
         strBuilder.write('static String ${_joinKey(keyParts)}(');
 
@@ -65,6 +66,7 @@ class CSVParser {
         // Write names args of function
         int processedArgCount = 0;
         while (value.contains('{')) {
+          hasArgs = true;
           final int startIndex = value.indexOf('{');
           final int endIndex = value.indexOf('}');
           if (startIndex >= endIndex || endIndex - startIndex == 1) {
@@ -90,6 +92,8 @@ class CSVParser {
           strBuilder.write('}');
         }
 
+        if(hasArgs && !item.isPlural && args.isEmpty)
+          strBuilder.write('args');
         strBuilder.write(') => ');
         strBuilder.write('\'${item.key}\'');
 
@@ -107,6 +111,8 @@ class CSVParser {
             strBuilder.write("'$arg': '\$$arg', ");
           }
           strBuilder.write('},');
+        }else if(hasArgs && !item.isPlural){
+          strBuilder.writeln('args: args');
         }
 
         strBuilder.writeln(');');
