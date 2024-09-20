@@ -14,7 +14,11 @@ class CSVParser {
   String getSupportedLocales() {
     final locales = lines.first.sublist(1, lines.first.length).map((e) {
       final languages = e.toString().split('_');
-      return "Locale('${languages[0]}', '${languages[1]}')";
+      if(languages.length == 1){
+        return "Locale('${languages[0]}')";
+      }else {
+        return "Locale('${languages[0]}', '${languages[1]}')";
+      }
     }).toList();
     return 'static const supportedLocales = [\n${locales.join(',\n')}\n];';
   }
